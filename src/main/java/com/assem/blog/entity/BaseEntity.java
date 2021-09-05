@@ -1,6 +1,7 @@
 package com.assem.blog.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,10 +12,11 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @MappedSuperclass
+@Getter
 public class BaseEntity {
 
     @Id
-    private UUID id = UUID.randomUUID();
+    protected UUID id = UUID.randomUUID();
 
     @CreationTimestamp
     @Column(name = "created_at")
