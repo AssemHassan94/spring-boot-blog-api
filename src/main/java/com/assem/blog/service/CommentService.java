@@ -33,7 +33,7 @@ public class CommentService {
 
     public CommentDto findById(UUID commentId) {
         return commentRepository.findById(commentId).get().asDTO();
-
+        
     }
 
     public CommentDto create(UUID articleId, CommentDto commentDto) {

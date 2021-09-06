@@ -1,11 +1,18 @@
 package com.assem.blog.entity;
 
+import com.assem.blog.dto.UserDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User extends BaseEntity {
 
@@ -21,6 +28,16 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "author",
             fetch = FetchType.LAZY)
     private List<Article> articles;
+
+    public UserDto asDTO() {
+        return new UserDto(id, userName, password, bio);
+    }
+
+    public void update(String userName, String password, String bio) {
+        this.userName = userName;
+        this.password = password;
+        this.bio = bio;
+    }
 
 
 }
