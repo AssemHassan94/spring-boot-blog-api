@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
@@ -19,7 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,20 +29,13 @@ class CommentServiceTest {
     private CommentRepository commentRepository;
     @Mock
     private ArticleRepository articleRepository;
-    @Mock
+
     private Article article;
-    private User user;
     private Comment comment;
 
     @BeforeEach
     void setUp() {
         commentService = new CommentService(commentRepository, articleRepository);
-
-        user = User.builder()
-                .userName("assem")
-                .password("123456")
-                .bio("post writer")
-                .build();
 
         article = Article.builder()
                 .title("Test Article")
@@ -55,9 +46,7 @@ class CommentServiceTest {
         comment = Comment.builder()
                 .body("Test Comment")
                 .article(article)
-                .author(user)
                 .build();
-
     }
 
     @Test
@@ -73,6 +62,7 @@ class CommentServiceTest {
     void CanFindExistedCommentById() {
         //given
         when(commentRepository.getById(comment.getId())).thenReturn(comment);
+
         //when
         commentService.findById(comment.getId());
 
@@ -81,7 +71,7 @@ class CommentServiceTest {
                 ArgumentCaptor.forClass(UUID.class);
         verify(commentRepository)
                 .getById(uuidArgumentCaptor.capture());
-        //then
+
         assertThat(uuidArgumentCaptor.getValue()).isEqualTo(comment.getId());
     }
 
@@ -90,12 +80,14 @@ class CommentServiceTest {
         //given
         Set<Comment> comments = new HashSet<>();
         comments.add(comment);
+
         Article currentArticle = Article.builder()
                 .title("Test Article")
                 .body("Test Body")
                 .desc("Short Article")
                 .comments(comments)
                 .build();
+
         when(articleRepository.getById(currentArticle.getId())).thenReturn(currentArticle);
         when(articleRepository.save(ArgumentMatchers.any(Article.class))).thenReturn(currentArticle);
         when(commentRepository.save(ArgumentMatchers.any(Comment.class))).thenReturn(comment);
@@ -125,7 +117,10 @@ class CommentServiceTest {
         //given
         when(commentRepository.getById(comment.getId())).thenReturn(comment);
 
-        Comment updatedComment = Comment.builder().body("updatedComment").article(article).author(user).build();
+        Comment updatedComment = Comment.builder()
+                .body("updatedComment")
+                .article(article)
+                .build();
 
         when(commentRepository.save(ArgumentMatchers.any(Comment.class))).thenReturn(updatedComment);
 

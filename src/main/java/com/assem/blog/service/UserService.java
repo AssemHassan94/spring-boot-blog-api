@@ -2,17 +2,12 @@ package com.assem.blog.service;
 
 
 import com.assem.blog.dao.UserRepository;
-import com.assem.blog.dto.ArticleDto;
 import com.assem.blog.dto.UserDto;
-import com.assem.blog.entity.Article;
 import com.assem.blog.entity.User;
-import com.assem.blog.exception.RecordNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
