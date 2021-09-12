@@ -1,10 +1,12 @@
 package com.assem.blog.controller;
 
 import com.assem.blog.dto.ArticleDto;
+import com.assem.blog.exception.RecordNotFoundException;
 import com.assem.blog.service.ArticleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -20,14 +22,11 @@ public class ArticleApi {
     @GetMapping
     public List<ArticleDto> getArticles() {
 
-        List<ArticleDto> articles = articleService.findAll();
-
-        return articles;
+        return articleService.findAll();
     }
 
     @GetMapping("/{articleId}")
     public ArticleDto getArticle(@PathVariable UUID articleId) {
-
         return articleService.findById(articleId);
     }
 
@@ -48,6 +47,8 @@ public class ArticleApi {
 
     @DeleteMapping("/{articleId}")
     public void delete(@PathVariable UUID articleId) {
+
+        ArticleDto articleDto = articleService.findById(articleId);
         articleService.delete(articleId);
     }
 }

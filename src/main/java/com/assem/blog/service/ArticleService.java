@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,6 +17,7 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
 
+
     public List<ArticleDto> findAll() {
         List<Article> articles = articleRepository.findAll();
         List<ArticleDto> articleDtos = new ArrayList<>();
@@ -26,12 +26,15 @@ public class ArticleService {
             articleDtos.add(article.asDTO());
         }
 //        return articleRepository.findAll().stream().map(Article::asDTO).collect(Collectors.toList());
+
         return articleDtos;
     }
 
 
     public ArticleDto findById(UUID articleId) {
-        return articleRepository.findById(articleId).get().asDTO();
+        Article article = articleRepository.getById(articleId);
+
+        return article.asDTO();
     }
 
     public ArticleDto create(ArticleDto articleDto) {
@@ -53,8 +56,6 @@ public class ArticleService {
     }
 
     public void delete(UUID articleId) {
-
         articleRepository.delete(articleRepository.getById(articleId));
-
     }
 }

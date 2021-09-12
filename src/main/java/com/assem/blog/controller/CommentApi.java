@@ -21,9 +21,7 @@ public class CommentApi {
     @GetMapping("/articles/{articleId}/comments")
     public List<CommentDto> getComments() {
 
-        List<CommentDto> comments = commentService.findAll();
-
-        return comments;
+        return commentService.findAll();
     }
 
 
@@ -34,8 +32,8 @@ public class CommentApi {
     }
 
     @PutMapping("/articles/{articleId}/comments/{commentId}")
-    public CommentDto update(@PathVariable UUID commentId, @Valid @RequestBody CommentDto commentDto){
-        return commentService.update(commentId,commentDto);
+    public CommentDto update(@PathVariable UUID commentId, @Valid @RequestBody CommentDto commentDto) {
+        return commentService.update(commentId, commentDto);
     }
 
     @DeleteMapping("/articles/{articleId}/comments/{commentId}")

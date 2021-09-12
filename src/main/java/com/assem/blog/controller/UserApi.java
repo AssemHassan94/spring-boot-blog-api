@@ -2,6 +2,7 @@ package com.assem.blog.controller;
 
 
 import com.assem.blog.dto.UserDto;
+import com.assem.blog.exception.RecordNotFoundException;
 import com.assem.blog.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +17,13 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 public class UserApi {
+
     private final UserService userService;
 
     @GetMapping
     public List<UserDto> getUsers() {
 
-        List<UserDto> users = userService.findAll();
-
-        return users;
+        return userService.findAll();
     }
 
     @GetMapping("/{userId}")
@@ -33,16 +33,29 @@ public class UserApi {
 
     @PostMapping
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
+
         return userService.create(userDto);
     }
 
     @PutMapping("/{userId}")
     public UserDto update(@PathVariable UUID userId, @Valid @RequestBody UserDto userDto) {
+
         return userService.update(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable UUID userId) {
+        UserDto userDto = userService.findById(userId);
         userService.delete(userId);
     }
+
+//    @PostMapping("/{userId}/followers/{followerId}")
+//    public UserDto followUser(@PathVariable UUID userId, @PathVariable UUID followerId) {
+//        return userService.follow(userId, followerId);
+//    }
+//
+//    @DeleteMapping("/{userId}/followers/{followerId}")
+//    public UserDto UnfollowUser(@PathVariable UUID userId, @PathVariable UUID followerId) {
+//        return userService.unfollow(userId, followerId);
+//    }
 }

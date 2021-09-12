@@ -1,20 +1,17 @@
 package com.assem.blog.entity;
 
 import com.assem.blog.dto.ArticleDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-@Table(name = "articles")
+
 @Entity
+@Table(name = "articles")
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Article extends BaseEntity {
 
     @Column(name = "title")
@@ -29,22 +26,35 @@ public class Article extends BaseEntity {
     @Getter
     private String desc;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH
-            , CascadeType.REFRESH, CascadeType.MERGE})
+    @Setter
     private User author;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "article_id")
-    private List<Comment> comments;
+    @ManyToMany(fetch = FetchType.LAZY
+            , cascade = {CascadeType.PERSIST, CascadeType.DETACH
+            , CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(name = "article_favorites",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> userFavorited = new HashSet<>();
 
 
-    public void addComment(Comment tempComment) {
-        if (comments == null) {
-            comments = new ArrayList<Comment>();
-        }
-        comments.add(tempComment);
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "article")
+    @Getter
+    private Set<Comment> comments = new HashSet<>();
+
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setArticle(this);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setArticle(null);
     }
 
     public ArticleDto asDTO() {
@@ -55,8 +65,5 @@ public class Article extends BaseEntity {
         this.title = title;
         this.body = body;
         this.desc = desc;
-    }
-
-    public Article() {
     }
 }

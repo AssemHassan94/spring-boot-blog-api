@@ -17,8 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CommentService {
 
-    private final CommentRepository commentRepository;
-    private final ArticleRepository articleRepository;
+    private  CommentRepository commentRepository;
+    private  ArticleRepository articleRepository;
 
     public List<CommentDto> findAll() {
         List<Comment> comments = commentRepository.findAll();
@@ -27,17 +27,16 @@ public class CommentService {
         ) {
             commentDtos.add(comment.asDTO());
         }
-//        return articleRepository.findAll().stream().map(Article::asDTO).collect(Collectors.toList());
+
         return commentDtos;
     }
 
     public CommentDto findById(UUID commentId) {
-        return commentRepository.findById(commentId).get().asDTO();
-        
+        return commentRepository.getById(commentId).asDTO();
+
     }
 
     public CommentDto create(UUID articleId, CommentDto commentDto) {
-
         Article article = articleRepository.getById(articleId);
         Comment comment = Comment.builder().body(commentDto.getBody()).build();
 
@@ -49,7 +48,6 @@ public class CommentService {
 
 
     public CommentDto update(UUID commentId, CommentDto commentDto) {
-
         Comment comment = commentRepository.getById(commentId);
         comment.update(commentDto.getBody());
 
@@ -57,8 +55,6 @@ public class CommentService {
     }
 
     public void delete(UUID commentId) {
-
         commentRepository.delete(commentRepository.getById(commentId));
-
     }
 }
