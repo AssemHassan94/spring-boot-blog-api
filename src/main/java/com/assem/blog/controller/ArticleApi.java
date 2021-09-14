@@ -34,15 +34,12 @@ public class ArticleApi {
     public ArticleDto create(@Valid @RequestBody ArticleDto articleDto) {
 
         return articleService.create(articleDto);
-//        log.info(title, body , desc);
     }
 
     @PutMapping("/{articleId}")
     public ArticleDto update(@PathVariable UUID articleId, @Valid @RequestBody ArticleDto articleDto) {
         return articleService.update(articleId, articleDto);
 
-//        return articleService.create(articleDto);
-//        log.info(title, body , desc);
     }
 
     @DeleteMapping("/{articleId}")
