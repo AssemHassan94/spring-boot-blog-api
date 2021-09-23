@@ -1,5 +1,6 @@
 package com.assem.blog.service;
 
+import com.assem.blog.dao.RoleRepository;
 import com.assem.blog.dao.UserRepository;
 import com.assem.blog.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -20,14 +23,18 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private RoleRepository roleRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
     private User user;
     //    private AutoCloseable autoCloseable;  --> @ExtendWith(MockitoExtension.class)
 
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, roleRepository, passwordEncoder);
         user = User.builder()
-                .userName("assem")
+                .username("assem")
                 .password("123456")
                 .bio("post writer")
                 .build();
@@ -72,7 +79,7 @@ class UserServiceTest {
         when(userRepository.save(ArgumentMatchers.any(User.class))).thenReturn(user);
 
         //when
-        userService.create(user.asDTO());
+        userService.saveUser(user.asDTO());
 
         //then
         ArgumentCaptor<User> userArgumentCaptor =
@@ -83,7 +90,7 @@ class UserServiceTest {
 
         User capturedUser = userArgumentCaptor.getValue();
 
-        assertThat(capturedUser.getUserName()).isEqualTo(user.getUserName());
+        assertThat(capturedUser.getUsername()).isEqualTo(user.getUsername());
         assertThat(capturedUser.getPassword()).isEqualTo(user.getPassword());
         assertThat(capturedUser.getBio()).isEqualTo(user.getBio());
     }
@@ -94,7 +101,7 @@ class UserServiceTest {
         when(userRepository.getById(user.getId())).thenReturn(user);
 
         User updatedUser = User.builder()
-                .userName("Updated UserName")
+                .username("Updated UserName")
                 .password("123456")
                 .bio("post writer")
                 .build();
@@ -119,7 +126,7 @@ class UserServiceTest {
 
         assertThat(uuidArgumentCaptor.getValue()).isEqualTo(user.getId());
 
-        assertThat(capturedUser.getPassword()).isNotEqualTo(updatedUser.getUserName());
+        assertThat(capturedUser.getPassword()).isNotEqualTo(updatedUser.getUsername());
         assertThat(capturedUser.getPassword()).isEqualTo(updatedUser.getPassword());
         assertThat(capturedUser.getBio()).isEqualTo(updatedUser.getBio());
 

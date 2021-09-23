@@ -25,7 +25,7 @@ class ArticleRepositoryTest {
     void CheckIfArticleExistsId() {
         //given
         User user = User.builder()
-                .userName("assem")
+                .username("assem")
                 .password("123456")
                 .bio("post writer")
                 .build();

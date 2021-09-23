@@ -1,8 +1,7 @@
-package com.assem.blog.controller;
+package com.assem.blog.api;
 
 
 import com.assem.blog.dto.CommentDto;
-import com.assem.blog.entity.Comment;
 import com.assem.blog.service.CommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @RestController
 @Slf4j
 @AllArgsConstructor
-public class CommentApi {
+public class CommentResource {
     private final CommentService commentService;
 
     @GetMapping("/articles/{articleId}/comments")

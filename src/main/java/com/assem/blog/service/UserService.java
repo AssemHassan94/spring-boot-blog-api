@@ -1,20 +1,48 @@
 package com.assem.blog.service;
 
 
+import com.assem.blog.dao.RoleRepository;
 import com.assem.blog.dao.UserRepository;
+import com.assem.blog.dto.RoleDto;
 import com.assem.blog.dto.UserDto;
+import com.assem.blog.dto.UserWithRoleDto;
+import com.assem.blog.entity.Role;
 import com.assem.blog.entity.User;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class UserService {
+@Transactional
+public class UserService implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found!");
+        }
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+    }
 
     public List<UserDto> findAll() {
         List<User> users = userRepository.findAll();
@@ -27,16 +55,39 @@ public class UserService {
         return userDtos;
     }
 
+    public List<UserWithRoleDto> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserWithRoleDto> userDtos = new ArrayList<>();
+        for (User user : users
+        ) {
+            UserWithRoleDto temp = new UserWithRoleDto(user.getId()
+                    , user.getUsername()
+                    , user.getPassword()
+                    , user.getBio()
+                    , user.getRoles());
+            userDtos.add(temp);
+        }
+
+        return userDtos;
+    }
+
     public UserDto findById(UUID userId) {
         User user = userRepository.getById(userId);
 
         return user.asDTO();
     }
 
-    public UserDto create(UserDto userDto) {
+    public UserDto getUserByUserName(String username) {
+        User user = userRepository.findByUsername(username);
+
+        return user.asDTO();
+    }
+
+    public UserDto saveUser(UserDto userDto) {
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         User user = User.builder()
-                .userName(userDto.getUserName())
-                .password(userDto.getPassword())
+                .username(userDto.getUserName())
+                .password(encodedPassword)
                 .bio(userDto.getBio())
                 .build();
 
@@ -55,6 +106,23 @@ public class UserService {
         userRepository.delete(userRepository.getById(userId));
     }
 
+
+    public RoleDto saveRole(RoleDto roleDto) {
+        Role role = Role.builder()
+                .name(roleDto.getName())
+                .build();
+
+        return roleRepository.save(role).asDto();
+    }
+
+
+    public void assignRoleToUser(String username, String roleName) {
+        User user = userRepository.findByUsername(username);
+        Role role = roleRepository.findByName(roleName);
+        user.getRoles().add(role);
+    }
+
+
     public UserDto follow(UUID userId, UUID followerId) {
         User user = userRepository.getById(userId);
         User follower = userRepository.getById(followerId);
@@ -70,4 +138,6 @@ public class UserService {
 
         return userRepository.save(user).asDTO();
     }
+
+
 }

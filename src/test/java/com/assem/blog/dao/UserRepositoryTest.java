@@ -3,7 +3,6 @@ package com.assem.blog.dao;
 import com.assem.blog.entity.User;
 import com.assem.blog.exception.RecordNotFoundException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -29,7 +28,7 @@ class UserRepositoryTest {
     void CheckIfUserExistsById() {
         //given
         User user = User.builder()
-                .userName("assem")
+                .username("assem")
                 .password("123456")
                 .bio("post writer")
                 .build();

@@ -1,6 +1,7 @@
 package com.assem.blog.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class BaseEntity {
 
     @Id
+    @Getter
     protected UUID id = UUID.randomUUID();
 
     @CreationTimestamp

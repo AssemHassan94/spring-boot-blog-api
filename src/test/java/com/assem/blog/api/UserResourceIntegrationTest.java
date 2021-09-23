@@ -1,4 +1,4 @@
-package com.assem.blog.controller;
+package com.assem.blog.api;
 
 import org.junit.jupiter.api.*;
 import org.springframework.test.annotation.DirtiesContext;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 )
 @Sql(statements = "DELETE FROM users",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class UserControllerIntegrationTest {
+public class UserResourceIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class CommentRepositoryTest {
@@ -28,7 +27,7 @@ class CommentRepositoryTest {
     void CheckIfCommentExistsId() {
         //given
         User user = User.builder()
-                .userName("assem")
+                .username("assem")
                 .password("123456")
                 .bio("post writer")
                 .build();

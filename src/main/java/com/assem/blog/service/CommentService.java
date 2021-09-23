@@ -17,8 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CommentService {
 
-    private  CommentRepository commentRepository;
-    private  ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
+    private final ArticleRepository articleRepository;
 
     public List<CommentDto> findAll() {
         List<Comment> comments = commentRepository.findAll();

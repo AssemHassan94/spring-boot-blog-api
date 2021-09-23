@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
         return findById(userId).orElseThrow(RecordNotFoundException::new);
     }
 
+    User findByUsername(String username) throws RecordNotFoundException;
+
+
 //    @Query("" +
 //            "SELECT CASE WHEN COUNT(u) > 0 THEN " +
 //            "TRUE ELSE FALSE END " +
@@ -27,5 +30,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 //    )
 //     Boolean SelectExistsUserName(String username);
 
-    Optional<User> findByUserName(String username);
+
 }

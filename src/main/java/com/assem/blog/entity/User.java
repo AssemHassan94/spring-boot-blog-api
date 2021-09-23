@@ -4,9 +4,7 @@ import com.assem.blog.dto.UserDto;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -18,13 +16,22 @@ import java.util.Set;
 public class User extends BaseEntity {
 
     @Column(name = "user_name")
-    private String userName;
+    private String username;
 
     @Column(name = "password")
     private String password;
 
     @Column(name = "bio")
     private String bio;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.DETACH
+                    , CascadeType.REFRESH, CascadeType.MERGE}
+            , mappedBy = "author")
+    private List<Article> articles;
 
     @ManyToMany(fetch = FetchType.LAZY
             , cascade = {CascadeType.PERSIST, CascadeType.DETACH
@@ -34,7 +41,6 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "following_id")})
     private Set<User> followings = new HashSet<>();
 
-
     @ManyToMany(mappedBy = "followings", fetch = FetchType.LAZY)
     private final Set<User> followers = new HashSet<>();
 
@@ -42,12 +48,6 @@ public class User extends BaseEntity {
     @ManyToMany(mappedBy = "userFavorited")
     private Set<Article> favoritedArticles = new HashSet<>();
 
-
-    @OneToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.DETACH
-                    , CascadeType.REFRESH, CascadeType.MERGE}
-            , mappedBy = "author")
-    private List<Article> articles;
 
     public void createArticle(Article article) {
         this.articles.add(article);
@@ -77,12 +77,12 @@ public class User extends BaseEntity {
     }
 
     public void update(String userName, String password, String bio) {
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
         this.bio = bio;
     }
 
     public UserDto asDTO() {
-        return new UserDto(this.id, this.userName, this.password, this.bio);
+        return new UserDto(id, username, password, bio);
     }
 }

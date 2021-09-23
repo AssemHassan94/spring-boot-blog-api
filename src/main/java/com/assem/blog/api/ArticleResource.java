@@ -1,7 +1,6 @@
-package com.assem.blog.controller;
+package com.assem.blog.api;
 
 import com.assem.blog.dto.ArticleDto;
-import com.assem.blog.exception.RecordNotFoundException;
 import com.assem.blog.service.ArticleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/articles")
 @Slf4j
 @AllArgsConstructor
-public class ArticleApi {
+public class ArticleResource {
     private final ArticleService articleService;
 
     @GetMapping
